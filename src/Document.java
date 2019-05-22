@@ -1,4 +1,4 @@
-package src;
+
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -78,9 +78,9 @@ public class Document {
 		} while (!(i == (-1)));
 
 		i = x;
-		i += 6;
+		i += start.length();
 
-		while (i < text.length() - 6) {
+		while (i < text.length() - 8) {
 			i += 8;
 
 			// Anfang des Contents

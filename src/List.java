@@ -1,4 +1,4 @@
-package src;
+
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,12 +18,12 @@ public class List {
 
 	/**
 	 * Generierung einer linearen Liste und speichern in der Klasse selbst.
-	 * Besonderheit ist der Escape Character "%", mit dem wir in der Search
-	 * identifizieren können, wann der Inhalt einer Fabel zu Ende ist. Die Funktion
+	 * Besonderheit ist der Escape Character "$", mit dem wir in der Search
+	 * identifizieren können, wann das analysierte Wort zu Ende ist. Die Funktion
 	 * der for-Schleife ist wieder das iterative öffnen und einlesen der Inhalte der
 	 * Fabeln, um auf denen dann eine Suche ausführen zu können.(Siehe openSave() in
 	 * Klasse Cleaning.) Der einzige Unterschied ist, dass wir hier dann noch
-	 * jeweils jeden Inhalt der Fabel an die Liste mit einem "%" anhängen, welches
+	 * jeweils jeden Inhalt der Fabel an die Liste mit einem "$" anhängen, welches
 	 * das Ende der Fabel makiert.
 	 * 
 	 * @param path Der Pfad, wo die Dateien liegen.
