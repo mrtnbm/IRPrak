@@ -28,9 +28,8 @@ public class UserInterface {
 		 * currentDirFile.getCanonicalPath().length()); } catch (IOException e) { //
 		 * TODO Auto-generated catch block e.printStackTrace(); }
 		 */
-		String currentDir = System.getProperty("user.dir");
 		String dirName = inputUser;
-		File dir = new File(currentDir + "\\" + dirName);
+		File dir = new File(dirName);
 
 		if (dir.mkdir()) {
 			System.out.println("Ordner erstellt");
@@ -40,21 +39,28 @@ public class UserInterface {
 
 		Document obj = new Document();
 		obj.importText("aesopa10.txt");
-		obj.splitText(obj.str, "Fables", dir.getParent());
+		obj.splitText(obj.str, "Fables", dirName);
 
 		String dirName2 = inputUser2;
-		File dir2 = new File(currentDir + "\\" + dirName2);
+		File dir2 = new File(dirName2);
+		File saveDir = new File (dirName2 + dirName);
 
 		if (dir2.mkdir()) {
 			System.out.println("Ordner erstellt");
 		} else {
 			System.out.println(dir2 + " konnte nicht erstellt werden");
 		}
+		
+		if (saveDir.mkdir()) {
+			System.out.println("Ordner erstellt");
+		} else {
+			System.out.println(saveDir + " konnte nicht erstellt werden");
+		}
 
 		Cleaning objc = new Cleaning();
 		objc.readStopWords("englishST.txt");
 		objc.elimStopWords(obj.str);
-		objc.openSave(dir.getParent(), dir2.getParent());
+		objc.openSave(dirName, dirName2);
 
 		List list = new List();
 		Search search = new Search();
@@ -72,7 +78,7 @@ public class UserInterface {
 				if (input1.equals("0")) {
 					System.out.println("Geben Sie das zu suchende Wort ein!");
 					searchString = scan.next();
-					list.makeLinearList(dirName2 + "/temp");
+					list.makeLinearList(dirName2 + dirName);
 					search.search(list.linkedList, searchString);
 				}
 
