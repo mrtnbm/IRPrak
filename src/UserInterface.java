@@ -1,10 +1,11 @@
-package src;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
- * Main-Methode für den Benutzer, um die Stoppworteliminierung durchführen zu
- * können.
+ * Main-Methode fÃ¼r den Benutzer, um die Stoppworteliminierung durchfÃ¼hren zu
+ * kÃ¶nnen.
  * 
  * @author Johannes Wawra, Martin Behm
  *
@@ -15,14 +16,45 @@ public class UserInterface {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
+		System.out.println("In welchem Pfad sollen die Fabeln gespeichert werden? example/");
+		Scanner input = new Scanner(System.in);
+		String inputUser = input.next();
+		System.out.println("Zweiter Pfad.");
+		String inputUser2 = input.next();
+		/*
+		 * File currentDirFile = new File("."); String helper =
+		 * currentDirFile.getAbsolutePath(); String currentDir = null; try { currentDir
+		 * = helper.substring(0, helper.length() -
+		 * currentDirFile.getCanonicalPath().length()); } catch (IOException e) { //
+		 * TODO Auto-generated catch block e.printStackTrace(); }
+		 */
+		String currentDir = System.getProperty("user.dir");
+		String dirName = inputUser;
+		File dir = new File(currentDir + "\\" + dirName);
+
+		if (dir.mkdir()) {
+			System.out.println("Ordner erstellt");
+		} else {
+			System.out.println(dir + " konnte nicht erstellt werden");
+		}
+
 		Document obj = new Document();
 		obj.importText("aesopa10.txt");
-		obj.splitText(obj.str, "Fables", "temp/");
+		obj.splitText(obj.str, "Fables", dir.getParent());
+
+		String dirName2 = inputUser2;
+		File dir2 = new File(currentDir + "\\" + dirName2);
+
+		if (dir2.mkdir()) {
+			System.out.println("Ordner erstellt");
+		} else {
+			System.out.println(dir2 + " konnte nicht erstellt werden");
+		}
 
 		Cleaning objc = new Cleaning();
 		objc.readStopWords("englishST.txt");
 		objc.elimStopWords(obj.str);
-		objc.openSave("temp/", "temp2/");
+		objc.openSave(dir.getParent(), dir2.getParent());
 
 		List list = new List();
 		Search search = new Search();
@@ -31,27 +63,27 @@ public class UserInterface {
 		do {
 
 			Scanner scan = new Scanner(System.in);
-			System.out.println("Für beenden schreiben Sie \"exit\"");
-			System.out.println("Für Suche mit Stoppwörtern drücken Sie die 1, sonst 0.");
-			String input = scan.next();
+			System.out.println("FÃ¼r beenden schreiben Sie \"exit\"");
+			System.out.println("FÃ¼r Suche mit StoppwÃ¶rtern drÃ¼cken Sie die 1, sonst 0.");
+			String input1 = scan.next();
 
-			if (input.equals("0") || input.equals("1") || input.equals("exit")) {
+			if (input1.equals("0") || input1.equals("1") || input1.equals("exit")) {
 
-				if (input.equals("0")) {
+				if (input1.equals("0")) {
 					System.out.println("Geben Sie das zu suchende Wort ein!");
 					searchString = scan.next();
-					list.makeLinearList("temp2/temp/");
+					list.makeLinearList(dirName2 + "/temp");
 					search.search(list.linkedList, searchString);
 				}
 
-				if (input.equals("1")) {
+				if (input1.equals("1")) {
 					System.out.println("Geben Sie das zu suchende Wort ein!");
 					searchString = scan.next();
-					list.makeLinearList("temp/");
+					list.makeLinearList(dirName);
 					search.search(list.linkedList, searchString);
 				}
 
-				if (input.equals("exit")) {
+				if (input1.equals("exit")) {
 					System.out.println("Programm wurde beendet.");
 					break;
 				}
