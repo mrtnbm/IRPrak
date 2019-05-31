@@ -16,10 +16,10 @@ public class UserInterface {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		System.out.println("In welchem Pfad sollen die Fabeln gespeichert werden? example/");
+		System.out.println("In welchem Pfad sollen die Fabeln gespeichert werden?");
 		Scanner input = new Scanner(System.in);
 		String inputUser = input.next();
-		System.out.println("Zweiter Pfad.");
+		System.out.println("Zweiter Pfad für die Fabeln ohne Stoppwörter:");
 		String inputUser2 = input.next();
 		/*
 		 * File currentDirFile = new File("."); String helper =
@@ -28,7 +28,7 @@ public class UserInterface {
 		 * currentDirFile.getCanonicalPath().length()); } catch (IOException e) { //
 		 * TODO Auto-generated catch block e.printStackTrace(); }
 		 */
-		String dirName = inputUser;
+		String dirName = inputUser + "\\";
 		File dir = new File(dirName);
 
 		if (dir.mkdir()) {
@@ -41,7 +41,7 @@ public class UserInterface {
 		obj.importText("aesopa10.txt");
 		obj.splitText(obj.str, "Fables", dirName);
 
-		String dirName2 = inputUser2;
+		String dirName2 = inputUser2 + "\\";
 		File dir2 = new File(dirName2);
 		File saveDir = new File (dirName2 + dirName);
 
