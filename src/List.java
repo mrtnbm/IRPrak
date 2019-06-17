@@ -1,5 +1,4 @@
 
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -15,6 +14,7 @@ import java.util.LinkedList;
 public class List {
 
 	LinkedList<String> linkedList;
+	LinkedList<String> invertedList;
 
 	/**
 	 * Generierung einer linearen Liste und speichern in der Klasse selbst.
@@ -70,7 +70,68 @@ public class List {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
 
+	void makeInvertedList(String path) {
+		String tempString;
+		String out = "";
+		String invertedWord = "";
+		invertedList = new LinkedList<String>();
+		int i = 0;
+		int j = 0;
+		try {
+			final File folder = new File(path);
+			for (final File fileEntry : folder.listFiles()) {
+
+				FileReader fr = new FileReader(fileEntry);
+				BufferedReader br = new BufferedReader(fr);
+
+				out = "";
+
+				do {
+					tempString = br.readLine();
+					out += tempString;
+				} while (tempString != null);
+
+				do {
+					if ((i != j) && (j < out.length() - 1) && (i < out.length() - 1) && (j != -1)) {
+
+						invertedWord = out.substring(i, j);
+					}
+					i = j;
+
+					boolean exist = false;
+					for (int wordIndex = 0; wordIndex < invertedList.size(); wordIndex++) {
+						String entry = invertedList.get(wordIndex);
+
+						String word = entry.substring(0, entry.indexOf("$"));
+						if (invertedWord.equals(word)) {
+							exist = true;
+							entry += "$" + fileEntry.getName();
+							invertedList.set(wordIndex, entry);
+						}
+					}
+					if (!exist) {
+						invertedList.add(invertedWord + "$" + fileEntry.getName());
+					}
+
+					i++;
+
+					j = out.indexOf(" ", i);
+
+					// Abfangen, wenn es keinen Inhalt mehr mit " " gibt
+				} while (j != -1);
+
+				br.close();
+
+				System.out.println(fileEntry);
+			}
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 }

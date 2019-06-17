@@ -1,4 +1,10 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+//import java.util.Scanner;
 
 public class BasicFormReduction {
 
@@ -402,7 +408,6 @@ public class BasicFormReduction {
 	String step5a(String word, String mWord) {
 		String temp = mWord.substring(1, mWord.length() - 1);
 		int m = Integer.parseInt(temp);
-		System.out.println(m+"m");
 		if (m > 1) {
 			String out = replace(word, mWord, "e", "");
 			if (out != null) {
@@ -439,37 +444,94 @@ public class BasicFormReduction {
 		String vcWord = convertCV(word);
 		String mWord = convertM(vcWord);
 		word = step1a(word, mWord);
-System.out.println("1a"+word);
 		
 		vcWord = convertCV(word);
 		mWord = convertM(vcWord);
 		word = step1b(word, mWord);
-		System.out.println("1b"+word);
+		
 		vcWord = convertCV(word);
 		mWord = convertM(vcWord);
 		word = step1c(word, mWord);
-		System.out.println("1c"+word);
+		
 		vcWord = convertCV(word);
 		mWord = convertM(vcWord);
 		word = step2(word, mWord);
-		System.out.println("2"+word);
+		
 		vcWord = convertCV(word);
 		mWord = convertM(vcWord);
 		word = step3(word, mWord);
-		System.out.println("3"+word);
+		
 		vcWord = convertCV(word);
 		mWord = convertM(vcWord);
 		word = step4(word, mWord);
-		System.out.println("4"+word);
+		
 		vcWord = convertCV(word);
 		mWord = convertM(vcWord);
 		word = step5a(word, mWord);
-		System.out.println("5a"+word);
+		
 		vcWord = convertCV(word);
 		mWord = convertM(vcWord);
 		return step5b(word, mWord);
 	}
+	
+	
+	String truncateWords(String str) {
+		str = " " + str + " ";
+		str = str.toLowerCase();
+		String out = "";
+		int i = 0;
+		int next = 0;
+		while(next != -1) {
+			String word = str.substring(i,next);
+			out += applyRules(word) + " "; //basicformreduction
+			i = next;
+			int j = str.indexOf(" ",i+1);
+			int l = str.indexOf("/n",i+1);
+			next = Math.min(j,l);
+		}
+		System.out.println(".");
+		return out;
+	}
+	
+	
+	
+	void openSave(String readPath, String writePath) {
+		String temp;
+		String out = "";
+		String string = "";
 
+		try {
+
+			final File folder = new File(readPath);
+			for (final File fileEntry : folder.listFiles()) {
+
+				FileReader fr = new FileReader(fileEntry);
+				BufferedReader br = new BufferedReader(fr);
+				out = "";
+
+				do {
+					temp = br.readLine();
+					out += temp;
+				} while (temp != null);
+
+				string = truncateWords(out);
+
+				// Datei wird dann in path/file.txt geschrieben
+				FileWriter fw = new FileWriter(writePath + fileEntry.getPath());
+				BufferedWriter bw = new BufferedWriter(fw);
+
+				bw.write(string);
+				bw.close();
+				br.close();
+			}
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+/*
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		String word = sc.next();
@@ -478,4 +540,6 @@ System.out.println("1a"+word);
 		String out = b.applyRules(word);
 		System.out.println(out);
 	}
+*/
+	
 }

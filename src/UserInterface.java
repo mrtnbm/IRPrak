@@ -15,12 +15,21 @@ public class UserInterface {
 	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
-		System.out.println("In welchem Pfad sollen die Fabeln gespeichert werden?");
 		Scanner input = new Scanner(System.in);
+		/*
+		System.out.println("Moechten Sie Dateien laden? j/n");
+		if(input.next().equals("j")) {
+			System.out.println("Geben Sie den Pfad zur Sicherungsdatei an!");
+		//	input.next(); //TODO
+		};
+		*/
+		
+		System.out.println("In welchem Pfad sollen die Fabeln gespeichert werden?");
 		String inputUser = input.next();
 		System.out.println("Zweiter Pfad für die Fabeln ohne Stoppwörter:");
 		String inputUser2 = input.next();
+		System.out.println("Dritter Pfad für die Fabeln mit Stammformreduktion:");
+		String inputUser3 = input.next();
 		/*
 		 * File currentDirFile = new File("."); String helper =
 		 * currentDirFile.getAbsolutePath(); String currentDir = null; try { currentDir
@@ -29,51 +38,82 @@ public class UserInterface {
 		 * TODO Auto-generated catch block e.printStackTrace(); }
 		 */
 		String dirName = inputUser + "\\";
-		File dir = new File(dirName);
-
-		if (dir.mkdir()) {
-			System.out.println("Ordner erstellt");
+		File origin = new File (dirName);
+		
+		if (origin.mkdir()) {
+			System.out.println("Ordner" + origin + " erstellt");
 		} else {
-			System.out.println(dir + " konnte nicht erstellt werden");
+			System.out.println(origin + " konnte nicht erstellt werden");
 		}
-
+		
 		Document obj = new Document();
 		obj.importText("aesopa10.txt");
 		obj.splitText(obj.str, "Fables", dirName);
 
 		String dirName2 = inputUser2 + "\\";
-		File dir2 = new File(dirName2);
-		File saveDir = new File (dirName2 + dirName);
-
-		if (dir2.mkdir()) {
-			System.out.println("Ordner erstellt");
+		File saveDirMain = new File (dirName2);
+		if (saveDirMain.mkdir()) {
+			System.out.println("Ordner" + saveDirMain + " erstellt");
 		} else {
-			System.out.println(dir2 + " konnte nicht erstellt werden");
+			System.out.println(saveDirMain + " konnte nicht erstellt werden");
 		}
 		
+		File saveDir = new File (dirName2 + dirName);
+		
 		if (saveDir.mkdir()) {
-			System.out.println("Ordner erstellt");
+			System.out.println("Ordner" + saveDir + " erstellt");
 		} else {
 			System.out.println(saveDir + " konnte nicht erstellt werden");
 		}
+		
+		
+		String dirName3 = inputUser3 + "\\";
+		File reductionDirMain = new File (dirName3);
+		
+		if (reductionDirMain.mkdir()) {
+			System.out.println("Ordner" + reductionDirMain + " erstellt");
+		} else {
+			System.out.println(reductionDirMain + " konnte nicht erstellt werden");
+		}
 
+		File reductionDir = new File (dirName3 + dirName);
+		
+		if (reductionDir.mkdir()) {
+			System.out.println("Ordner" + reductionDir + " erstellt");
+		} else {
+			System.out.println(reductionDir + " konnte nicht erstellt werden");
+		}
+
+		
 		Cleaning objc = new Cleaning();
 		objc.readStopWords("englishST.txt");
 		objc.elimStopWords(obj.str);
 		objc.openSave(dirName, dirName2);
 
+		BasicFormReduction objb = new BasicFormReduction();
+		objb.openSave(dirName, dirName3);
+		
 		List list = new List();
 		Search search = new Search();
+		
+
+		list.makeLinearList(dirName);
+		list.makeInvertedList(dirName);
+		
+		
+		
 
 		String searchString = "";
 		do {
 
 			Scanner scan = new Scanner(System.in);
-			System.out.println("FÃ¼r beenden schreiben Sie \"exit\"");
-			System.out.println("FÃ¼r Suche mit StoppwÃ¶rtern drÃ¼cken Sie die 1, sonst 0.");
+			System.out.println("Fuer beenden schreiben Sie \"exit\"");
+			System.out.println("Fuer Suche auf originalen Dateien (inclusive Grossschreibung) druecken Sie die 0.");
+			System.out.println("Fuer Suche ohne Stoppwoertern drueken Sie die 1.");
+			System.out.println("Fuer Suche mit Stammformreduktion druecken Sie die 2.");
 			String input1 = scan.next();
 
-			if (input1.equals("0") || input1.equals("1") || input1.equals("exit")) {
+			if (input1.equals("0") || input1.equals("1") ||input1.equals("2") || input1.equals("exit")) {
 
 				if (input1.equals("0")) {
 					System.out.println("Geben Sie das zu suchende Wort ein!");
@@ -85,10 +125,15 @@ public class UserInterface {
 				if (input1.equals("1")) {
 					System.out.println("Geben Sie das zu suchende Wort ein!");
 					searchString = scan.next();
-					list.makeLinearList(dirName);
 					search.search(list.linkedList, searchString);
 				}
 
+				if (input1.equals("2")) {
+					System.out.println("Geben Sie das zu suchende Wort ein!");
+					searchString = scan.next();
+					search.search(list.invertedList, searchString);
+				}
+				
 				if (input1.equals("exit")) {
 					System.out.println("Programm wurde beendet.");
 					break;
