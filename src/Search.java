@@ -1,6 +1,7 @@
 
-
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 /**
  * Für das Suchen eines Wortes in allen Fabeln.
@@ -9,6 +10,8 @@ import java.util.LinkedList;
  *
  */
 public class Search {
+
+	LinkedList<String> searchList = new LinkedList<String>();
 
 	/**
 	 * Die Suche-Funktion sucht ein Wort in allen Fabeln und printed die Dateinamen
@@ -39,4 +42,88 @@ public class Search {
 
 		}
 	}
+
+	void setSearchList(LinkedList<String> list) {
+		searchList = list;
+	}
+	
+	void doSearch(String searchString) {
+		LinkedList<String> input = new LinkedList<String>();
+		input.add(searchString);
+		input.add("0");
+		LinkedList<String> output = boolCombin(input);
+		for(String result:output) {
+			System.out.println(result);
+		}
+	}
+
+	LinkedList<String> searchBool(String searchString) {
+		LinkedList<String> linkList = searchList;
+		int i = 0;
+		String tempString;
+		String pathToFile;
+		LinkedList<String> results = new LinkedList<String>();
+
+		for (String string : linkList) {
+
+			i = string.indexOf("$");
+			tempString = string.substring(0, i);
+
+			if (tempString.equals(searchString)) {
+				pathToFile = string.substring(i + 1, string.length());
+				results.add(pathToFile);
+			}
+		}
+		return results;
+	}
+
+	LinkedList<String> boolCombin(LinkedList<String> all) {
+		String input = all.get(0);
+
+		int orIndex = input.indexOf("|");
+		int andIndex = input.indexOf("&");
+		int notIndex = input.indexOf("!");
+
+		int orAnd = Math.max(orIndex, andIndex);
+		int logic = Math.max(orAnd, notIndex);
+
+		if (logic == -1) {
+			return all;
+		}
+
+		orAnd = Math.min(orIndex, andIndex);
+		logic = Math.min(orAnd, notIndex);
+
+		String searchChar = input.substring(logic, logic + 1);
+
+		String positionString = all.get(1);
+		int lastPosition = Integer.parseInt(positionString);
+
+		String word = input.substring(lastPosition, logic);
+		LinkedList<String> results = searchBool(word);
+		if (lastPosition == 0) {
+			all.addAll(results);
+			boolCombin(all);
+		} else {
+			LinkedList<String> resultBool = new LinkedList<String>();
+			if (searchChar.equals("|")) {
+				resultBool = (LinkedList<String>) all.stream().distinct().collect(Collectors.toList());
+			} else if (searchChar.equals("&")) {
+				resultBool = (LinkedList<String>) all.stream().filter(results::contains).collect(Collectors.toList());
+			} else if (searchChar.equals("!")) {
+				for (String oldWord : all) {
+					if (!results.contains(oldWord)) { // results shall not be in resultBool
+						resultBool.add(oldWord);
+					}
+				}
+			}
+
+			resultBool.add(0, String.valueOf(logic)); // remember last boolean
+			resultBool.add(0, input);
+
+			return boolCombin(resultBool);
+		}
+		return null;
+	}
+
 }
