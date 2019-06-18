@@ -98,7 +98,7 @@ public class UserInterface {
 		
 
 		list.makeLinearList(dirName);
-		list.makeInvertedList(dirName);
+	//	list.makeInvertedList(dirName);
 		
 		
 		
@@ -132,7 +132,7 @@ public class UserInterface {
 				if (input1.equals("2")) {
 					System.out.println("Geben Sie das zu suchende Wort ein!");
 					searchString = scan.next();
-					search.doSearchBool(list.invertedList, searchString);
+					search.doSearchBool(list.linkedList, searchString);
 				}
 				
 				if (input1.equals("exit")) {

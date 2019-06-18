@@ -34,17 +34,16 @@ public class Search {
 
 			i = string.indexOf("$");
 			tempString = string.substring(0, i);
-
+			tempString = tempString.toLowerCase();
 			if (tempString.equals(searchString)) {
 				pathToFile = string.substring(i + 1, string.length());
-				System.out.println(pathToFile);
 			}
 
 		}
 	}
 	
 	void doSearchBool(LinkedList<String> list, String searchString) {
-		searchList = list;
+		this.searchList = list;
 		LinkedList<String> input = new LinkedList<String>();
 		input.add(searchString);
 		input.add("0");
@@ -55,7 +54,27 @@ public class Search {
 	}
 
 	LinkedList<String> searchBool(String searchString) {
-		LinkedList<String> linkList = searchList;
+		LinkedList<String> linkList = this.searchList;
+		int i = 0;
+		String tempString;
+		String pathToFile;
+		LinkedList<String> results = new LinkedList<String>();
+
+		for (String string : linkList) {
+
+			i = string.indexOf("$");
+			tempString = string.substring(0, i);
+			tempString = tempString.toLowerCase();
+			if (tempString.equals(searchString)) {
+				pathToFile = string.substring(i + 1, string.length());
+				results.add(pathToFile);
+			}
+		}
+		return results;
+	}
+
+	LinkedList<String> searchAll() {
+		LinkedList<String> linkList = this.searchList;
 		int i = 0;
 		String tempString;
 		String pathToFile;
@@ -66,27 +85,35 @@ public class Search {
 			i = string.indexOf("$");
 			tempString = string.substring(0, i);
 
-			if (tempString.equals(searchString)) {
-				pathToFile = string.substring(i + 1, string.length());
-				results.add(pathToFile);
+			pathToFile = string.substring(i + 1, string.length());
+			if(!results.contains(pathToFile)) {
+				results.add(pathToFile);				
 			}
 		}
 		return results;
 	}
 
+	
 	LinkedList<String> boolCombin(LinkedList<String> all) {
+
+		String positionString = all.get(1);
+		int lastPosition = Integer.parseInt(positionString);
+		
 		String input = all.get(0);
 System.out.println(all);
-System.out.println(input);
-		int orIndex = input.indexOf("|");
-		int andIndex = input.indexOf("&");
-		int notIndex = input.indexOf("!");
+		int orIndex = input.indexOf("|",lastPosition);
+		int andIndex = input.indexOf("&",lastPosition);
+		int notIndex = input.indexOf("!",lastPosition);
 
 		int orAnd = Math.max(orIndex, andIndex);
 		int logic = Math.max(orAnd, notIndex);
 
 		if (logic == -1) {
-			return all;
+			String word = input.substring(lastPosition, input.length());
+			LinkedList<String> results = searchBool(word);
+			results.add(0,"999999999");	
+			results.add(0,input);	
+			return results;
 		}
 		if(orIndex == -1) {
 			if(andIndex == -1) {
@@ -112,25 +139,29 @@ System.out.println(input);
 		}
 		String searchChar = input.substring(logic, logic + 1);
 
-		String positionString = all.get(1);
-		int lastPosition = Integer.parseInt(positionString);
-
 		String word = input.substring(lastPosition, logic);
 		LinkedList<String> results = searchBool(word);
-		if (lastPosition == 0) {
+		System.out.println("si"+all.size());
+		/*if (all.size()==1) {
 			all.addAll(results);
 			all.set(1,String.valueOf(logic));
 			return boolCombin(all);
-		} else {
-			LinkedList<String> resultBool = new LinkedList<String>();
-			if (searchChar.equals("|")) {
-		
-				Set<String> set = new HashSet<String>();
-				set.addAll(all);
-				set.addAll(results);
-				
-				resultBool = new LinkedList<String>(set);
+		} else*/ {
+			all.remove(0);
+			all.remove(0);
 			
+			LinkedList<String> resultBool = new LinkedList<String>();
+			System.out.println(searchChar);
+			if (searchChar.equals("|")) {
+				for(String firstWord:all) {
+					int i = results.indexOf(firstWord);
+					if(i == -1) {
+						resultBool.add(firstWord);
+					} else {
+						results.remove(i);
+					}
+				}
+				all.addAll(results);
 			} else if (searchChar.equals("&")) {
 				for(String firstWord:all) {
 					if(results.contains(firstWord)) {
@@ -139,13 +170,15 @@ System.out.println(input);
 				}
 			
 			} else if (searchChar.equals("!")) {
-				for (String oldWord : all) {
-					if (!results.contains(oldWord)) { // results shall not be in resultBool
-						resultBool.add(oldWord);
+				LinkedList<String> allDocs = searchAll();
+				for(String firstWord:allDocs) {
+					if(!all.contains(firstWord)) {
+						resultBool.add(firstWord);
 					}
 				}
 			}
 
+			logic++;
 			resultBool.add(0, String.valueOf(logic)); // remember last boolean
 			resultBool.add(0, input);
 System.out.println(resultBool);
