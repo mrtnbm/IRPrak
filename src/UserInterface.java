@@ -107,6 +107,7 @@ public class UserInterface {
 		do {
 
 			Scanner scan = new Scanner(System.in);
+			System.out.println("Boolsche Suche nun moeglich. | fuer logisches Oder, & fuer logisches Und, ! fuer Negation.");
 			System.out.println("Fuer beenden schreiben Sie \"exit\"");
 			System.out.println("Fuer Suche auf originalen Dateien (inclusive Grossschreibung) druecken Sie die 0.");
 			System.out.println("Fuer Suche ohne Stoppwoertern drueken Sie die 1.");
@@ -119,19 +120,19 @@ public class UserInterface {
 					System.out.println("Geben Sie das zu suchende Wort ein!");
 					searchString = scan.next();
 					list.makeLinearList(dirName2 + dirName);
-					search.search(list.linkedList, searchString);
+					search.doSearchBool(list.linkedList, searchString);
 				}
 
 				if (input1.equals("1")) {
 					System.out.println("Geben Sie das zu suchende Wort ein!");
 					searchString = scan.next();
-					search.search(list.linkedList, searchString);
+					search.doSearchBool(list.linkedList, searchString);
 				}
 
 				if (input1.equals("2")) {
 					System.out.println("Geben Sie das zu suchende Wort ein!");
 					searchString = scan.next();
-					search.search(list.invertedList, searchString);
+					search.doSearchBool(list.invertedList, searchString);
 				}
 				
 				if (input1.equals("exit")) {

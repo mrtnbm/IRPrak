@@ -1,7 +1,7 @@
 
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 /**
  * Für das Suchen eines Wortes in allen Fabeln.
@@ -42,12 +42,9 @@ public class Search {
 
 		}
 	}
-
-	void setSearchList(LinkedList<String> list) {
-		searchList = list;
-	}
 	
-	void doSearch(String searchString) {
+	void doSearchBool(LinkedList<String> list, String searchString) {
+		searchList = list;
 		LinkedList<String> input = new LinkedList<String>();
 		input.add(searchString);
 		input.add("0");
@@ -79,7 +76,8 @@ public class Search {
 
 	LinkedList<String> boolCombin(LinkedList<String> all) {
 		String input = all.get(0);
-
+System.out.println(all);
+System.out.println(input);
 		int orIndex = input.indexOf("|");
 		int andIndex = input.indexOf("&");
 		int notIndex = input.indexOf("!");
@@ -90,10 +88,28 @@ public class Search {
 		if (logic == -1) {
 			return all;
 		}
-
-		orAnd = Math.min(orIndex, andIndex);
-		logic = Math.min(orAnd, notIndex);
-
+		if(orIndex == -1) {
+			if(andIndex == -1) {
+				logic = notIndex;
+			} else {
+				if(notIndex == -1) {
+					logic = andIndex;
+				} else {
+				logic = Math.min(andIndex, notIndex);
+				}
+			}
+		} else if(andIndex == -1) {
+			if(notIndex == -1) {
+				logic = orIndex;
+			} else {
+			logic = notIndex;
+			}
+		} else if(notIndex == -1) {
+			logic = Math.min(orIndex, andIndex);
+		} else {
+			orAnd = Math.min(orIndex, andIndex);
+			logic = Math.min(orAnd, notIndex);	
+		}
 		String searchChar = input.substring(logic, logic + 1);
 
 		String positionString = all.get(1);
@@ -103,13 +119,25 @@ public class Search {
 		LinkedList<String> results = searchBool(word);
 		if (lastPosition == 0) {
 			all.addAll(results);
-			boolCombin(all);
+			all.set(1,String.valueOf(logic));
+			return boolCombin(all);
 		} else {
 			LinkedList<String> resultBool = new LinkedList<String>();
 			if (searchChar.equals("|")) {
-				resultBool = (LinkedList<String>) all.stream().distinct().collect(Collectors.toList());
+		
+				Set<String> set = new HashSet<String>();
+				set.addAll(all);
+				set.addAll(results);
+				
+				resultBool = new LinkedList<String>(set);
+			
 			} else if (searchChar.equals("&")) {
-				resultBool = (LinkedList<String>) all.stream().filter(results::contains).collect(Collectors.toList());
+				for(String firstWord:all) {
+					if(results.contains(firstWord)) {
+						resultBool.add(firstWord);
+					}
+				}
+			
 			} else if (searchChar.equals("!")) {
 				for (String oldWord : all) {
 					if (!results.contains(oldWord)) { // results shall not be in resultBool
@@ -120,10 +148,9 @@ public class Search {
 
 			resultBool.add(0, String.valueOf(logic)); // remember last boolean
 			resultBool.add(0, input);
-
+System.out.println(resultBool);
 			return boolCombin(resultBool);
 		}
-		return null;
 	}
 
 }
