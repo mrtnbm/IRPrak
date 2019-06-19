@@ -49,7 +49,9 @@ public class Search {
 		input.add(searchString);
 		input.add("1");  //lastPositon darf nicht kleiner 1 sein.
 		LinkedList<String> output = boolCombin(input);
-		System.out.println(output);
+		if(output.size()==0) {
+			System.out.println("Keine Ergebnisse.");
+		}
 		for (String result : output) {
 			System.out.println(result);
 		}
@@ -111,7 +113,6 @@ public class Search {
 		int lastPosition = Integer.parseInt(positionString);
 
 		String input = all.get(0);
-		System.out.println(all);
 		int orIndex = input.indexOf("|", lastPosition);
 		int andIndex = input.indexOf("&", lastPosition);
 		int notIndex = input.indexOf("!", lastPosition);
@@ -149,11 +150,7 @@ public class Search {
 		String word = input.substring(lastPosition, logic); // aktuelles Wort
 
 		LinkedList<String> results = searchBool(word);
-		System.out.println("si" + all.size() + word + results.size());
-		/*
-		 * if (all.size()==1) { all.addAll(results); all.set(1,String.valueOf(logic));
-		 * return boolCombin(all); } else
-		 */ {
+		{
 			all.remove(0);
 			all.remove(0);
 
