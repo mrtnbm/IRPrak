@@ -100,7 +100,7 @@ public class UserInterface {
 
 		LinkedList<String> linear0 = list.makeLinearList(dirName);
 		LinkedList<String> linear1 = list.makeLinearList(dirName2 + dirName);
-		LinkedList<String> linear2 = list.makeLinearList(dirName2 + dirName);
+		LinkedList<String> linear2 = list.makeLinearList(dirName3 + dirName);
 		System.out.println("\nInvertierte Listen erstellen? Dies kann einige Minuten dauern. j/n");
 		boolean useInverted = false;
 		LinkedList<String> inverted = null;
@@ -118,9 +118,11 @@ public class UserInterface {
 			System.out.println("Fuer Suche auf originalen Dateien (inclusive Grossschreibung) druecken Sie die 0.");
 			System.out.println("Fuer Suche ohne Stoppwoerter drueken Sie die 1.");
 			System.out.println("Fuer Suche mit Stammformreduktion druecken Sie die 2.");
+			System.out.println("Fuer Evaluation druecken Sie die 3.");
 			String input1 = scan.next();
 
-			if (input1.equals("0") || input1.equals("1") || input1.equals("2") || input1.equals("exit")) {
+			if (input1.equals("0") || input1.equals("1") || input1.equals("2") || input1.equals("3")
+					|| input1.equals("exit")) {
 
 				if (input1.equals("0")) {
 					System.out.println("Geben Sie das zu suchende Wort ein!");
@@ -137,10 +139,15 @@ public class UserInterface {
 				if (input1.equals("2")) {
 					System.out.println("Geben Sie das zu suchende Wort ein!");
 					searchString = scan.next();
-					if(useInverted) {
+					if (useInverted) {
 						search.doSearchBool(inverted, searchString);
 					}
 					search.doSearchBool(linear2, searchString);
+				}
+
+				if (input1.equals("3")) {
+					Evaluate e = new Evaluate();
+					e.evaluate("ground_truth_correct.txt", linear2);
 				}
 
 				if (input1.equals("exit")) {
