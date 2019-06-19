@@ -489,7 +489,7 @@ public class BasicFormReduction {
 			int l = str.indexOf("/n",i+1);
 			next = Math.min(j,l);
 		}
-		System.out.println(".");
+		System.out.print(".");
 		return out;
 	}
 	

@@ -13,9 +13,6 @@ import java.util.LinkedList;
  */
 public class List {
 
-	LinkedList<String> linkedList;
-	LinkedList<String> invertedList;
-
 	/**
 	 * Generierung einer linearen Liste und speichern in der Klasse selbst.
 	 * Besonderheit ist der Escape Character "$", mit dem wir in der Search
@@ -28,11 +25,11 @@ public class List {
 	 * 
 	 * @param path Der Pfad, wo die Dateien liegen.
 	 */
-	void makeLinearList(String path) {
+	LinkedList<String> makeLinearList(String path) {
 		String tempString;
 		String out = "";
 		String linearWord = "";
-		linkedList = new LinkedList<String>();
+		LinkedList linkedList = new LinkedList<String>();
 		int i = 0;
 		int j = 0;
 		try {
@@ -70,13 +67,14 @@ public class List {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return linkedList;
 	}
 
-	void makeInvertedList(String path) {
+	LinkedList<String> makeInvertedList(String path) {
 		String tempString;
 		String out = "";
 		String invertedWord = "";
-		invertedList = new LinkedList<String>();
+		LinkedList<String> invertedList = new LinkedList<String>();
 		int i = 0;
 		int j = 0;
 		try {
@@ -131,7 +129,7 @@ public class List {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		return invertedList;
 	}
 
 }
