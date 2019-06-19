@@ -1,5 +1,4 @@
 
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -79,7 +78,7 @@ public class Document {
 
 		i = x;
 		i += start.length();
-		
+
 		int counter = 1;
 
 		while (i < text.length() - 8) {
@@ -115,17 +114,17 @@ public class Document {
 			System.out.println("Content= " + content);
 
 			title = title.toLowerCase();
-			title = title.replace(" ", "_") +"#"+counter +".txt";
+			title = title.replace(" ", "_") + "#" + counter + ".txt";
 			System.out.println("Titel: " + title);
 
-			content = content.replace("."," ");
-			content = content.replace(":"," ");
-			content = content.replace(","," ");
-			content = content.replace(";"," ");
-			content = content.replace("\""," ");
-			content = content.replace("!"," ");
-			content = content.replace("?"," ");
-			
+			content = content.replace(".", " ");
+			content = content.replace(":", " ");
+			content = content.replace(",", " ");
+			content = content.replace(";", " ");
+			content = content.replace("\"", " ");
+			content = content.replace("!", " ");
+			content = content.replace("?", " ");
+
 			counter++;
 
 			try {

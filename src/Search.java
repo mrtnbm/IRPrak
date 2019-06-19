@@ -40,6 +40,13 @@ public class Search {
 		}
 	}
 
+	/**
+	 * Boolsche Suche
+	 * 
+	 * @param list         LinkedList String list
+	 * @param searchString String mit dem Text, auf dem gesucht werden soll
+	 * @return
+	 */
 	LinkedList<Integer> doSearchBool(LinkedList<String> list, String searchString) {
 		this.searchList = list;
 		LinkedList<String> input = new LinkedList<String>();
@@ -50,15 +57,15 @@ public class Search {
 		if (output.size() == 0) {
 			System.out.println("Keine Ergebnisse.");
 		}
-		
+
 		LinkedList<Integer> numbers = new LinkedList<Integer>();
 		for (String result : output) {
 			int numberStart = result.indexOf("#");
 			int numberEnd = result.indexOf(".txt");
-			int number = Integer.valueOf(result.substring(numberStart+1, numberEnd));
-			if(!numbers.contains(number)) {
+			int number = Integer.valueOf(result.substring(numberStart + 1, numberEnd));
+			if (!numbers.contains(number)) {
 				System.out.println(result);
-				numbers.add(number);				
+				numbers.add(number);
 			}
 		}
 		return numbers;
@@ -131,7 +138,7 @@ public class Search {
 				lastPosition++;
 			}
 		}
-		
+
 		int notIndex = input.indexOf("!", lastPosition);
 		int orIndex = input.indexOf("|", lastPosition);
 		int andIndex = input.indexOf("&", lastPosition);
@@ -164,11 +171,11 @@ public class Search {
 			logic = input.length() - 1;
 		}
 		logic++;
-		
+
 		String word = input.substring(lastPosition, logic); // aktuelles Wort
 
 		LinkedList<String> results = searchBool(word);
-		{		
+		{
 			all.remove(0);
 			all.remove(0);
 
@@ -187,14 +194,14 @@ public class Search {
 			if (searchChar.equals("|")) {
 				for (String firstPath : all) {
 					int i = results.indexOf(firstPath);
-					if (i == -1) {//Pfad ist nicht im Ergebnis enthalten
-						resultBool.add(firstPath); //Pfad wird hinzugefuegt
-					} else { //Pfad ist in im Ergebnis enthalten
-						resultBool.add(firstPath); //Pfad wird hinzugefuegt
-						results.remove(i); //Pfad wird aus Ergebnis entfernt.
+					if (i == -1) {// Pfad ist nicht im Ergebnis enthalten
+						resultBool.add(firstPath); // Pfad wird hinzugefuegt
+					} else { // Pfad ist in im Ergebnis enthalten
+						resultBool.add(firstPath); // Pfad wird hinzugefuegt
+						results.remove(i); // Pfad wird aus Ergebnis entfernt.
 					}
 				}
-				resultBool.addAll(results); //Pfade aus Ergebnis, die nicht bereits vorhanden sind, hinzufuegen
+				resultBool.addAll(results); // Pfade aus Ergebnis, die nicht bereits vorhanden sind, hinzufuegen
 			} else if (searchChar.equals("&")) {
 				for (String firstWord : all) {
 					if (results.contains(firstWord)) {
@@ -213,7 +220,7 @@ public class Search {
 				if (logic == input.length()) { // wenn letztes Wort erreicht
 					word = input.substring(0, logic); // aktuelles Wort
 				} else {
-					word = input.substring(0, logic-1); // aktuelles Wort					
+					word = input.substring(0, logic - 1); // aktuelles Wort
 				}
 				results = searchBool(word);
 				resultBool = results;

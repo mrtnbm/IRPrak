@@ -1,28 +1,32 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 
+/**
+ * Boolsche Suche und Berechnung von Precision und Recall
+ * 
+ * @author Johannes Wawra, Martin Behm
+ *
+ */
 public class Evaluate {
 
+	/**
+	 * Methode, um die Boolsche Suche zu ermoeglichen.
+	 * 
+	 * @param path
+	 * @param list
+	 */
 	void evaluateBool(String path, LinkedList<String> list) {
 		LinkedList<LinkedList<Integer>> resultsList = new LinkedList<LinkedList<Integer>>();
 		LinkedList<String> wordList = new LinkedList<String>();
 
 		String temp;
-		String out = "";
-		String string = "";
 
 		try {
 
-			final File folder = new File(path);
-
 			FileReader fr = new FileReader(path);
 			BufferedReader br = new BufferedReader(fr);
-			out = "";
 
 			do {
 				temp = br.readLine();
@@ -59,7 +63,7 @@ public class Evaluate {
 
 				String wordU = wordList.get(0) + "|" + wordList.get(1);
 				String wordI = wordList.get(0) + "&" + wordList.get(1);
-				
+
 				LinkedList<Integer> resultUnion = new LinkedList<Integer>();
 				// Union von 2 Listen
 
@@ -81,7 +85,7 @@ public class Evaluate {
 						intersection.add(r);
 					}
 				}
-				
+
 				Search s = new Search();
 				LinkedList<Integer> resultsU = s.doSearchBool(list, wordU);
 				LinkedList<Integer> resultsI = s.doSearchBool(list, wordI);
@@ -93,7 +97,7 @@ public class Evaluate {
 						relevantResultsI.add(i);
 					}
 				}
-				
+
 				for (Integer i : resultUnion) {
 					if (resultsI.contains(i)) {
 						relevantResultsU.add(i);
@@ -102,32 +106,34 @@ public class Evaluate {
 
 				float recallU = (float) relevantResultsU.size() / (float) resultUnion.size();
 				float precisionU = (float) relevantResultsU.size() / (float) resultsU.size();
-				
+
 				float recallI = (float) relevantResultsI.size() / (float) intersection.size();
 				float precisionI = (float) relevantResultsI.size() / (float) resultsI.size();
 
 				System.out.println(wordU + "\nRecall Union: " + recallU + "\nPrecision Union:" + precisionU);
-				System.out.println(wordI + "\nRecall Intersection: " + recallI + "\nPrecision Intersection:" + precisionI);
+				System.out.println(
+						wordI + "\nRecall Intersection: " + recallI + "\nPrecision Intersection:" + precisionI);
 				// results a+b // numbers a+c // relevantResults a
 			}
-			
+
 			System.out.println("Alle Faelle berechnet.");
 		} catch (Exception e) {
 		}
 	}
 
+	/**
+	 * Berechnet precision und recall für die Eingaben aus der grountruth.txt
+	 * 
+	 * @param path Pfad der groundtruth.txt
+	 * @param list
+	 */
 	void evaluate(String path, LinkedList<String> list) {
 		String temp;
-		String out = "";
-		String string = "";
 
 		try {
 
-			final File folder = new File(path);
-
 			FileReader fr = new FileReader(path);
 			BufferedReader br = new BufferedReader(fr);
-			out = "";
 
 			do {
 				temp = br.readLine();
@@ -156,16 +162,16 @@ public class Evaluate {
 				Search s = new Search();
 				LinkedList<Integer> results = s.doSearchBool(list, word);
 				LinkedList<Integer> relevantResults = new LinkedList<Integer>();
-				
+
 				for (Integer i : numbers) {
 					if (results.contains(i)) {
 						relevantResults.add(i);
 					}
 				}
 
-			//	System.out.println(relevantResults);
-			//	System.out.println(numbers);System.out.println(results);
-				
+				// System.out.println(relevantResults);
+				// System.out.println(numbers);System.out.println(results);
+
 				float recall = (float) relevantResults.size() / (float) numbers.size();
 				float precision = (float) relevantResults.size() / (float) results.size();
 

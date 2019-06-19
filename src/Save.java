@@ -1,20 +1,19 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.LinkedList;
 
+/**
+ * Hilfsklasse, um Dateien/Ordner zu loeschen und Listen zu speichern
+ * 
+ * @author Johannes Wawra
+ *
+ */
 public class Save {
-	boolean saveList(LinkedList list, String filename) {
+	boolean saveList(@SuppressWarnings("rawtypes") LinkedList list, String filename) {
 		try {
 			FileOutputStream fos = new FileOutputStream(filename);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -28,6 +27,7 @@ public class Save {
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	LinkedList<String> openList(String filename) {
 		LinkedList<String> list = null;
 		try {

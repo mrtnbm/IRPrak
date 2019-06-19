@@ -29,7 +29,7 @@ public class List {
 		String tempString;
 		String out = "";
 		String linearWord = "";
-		LinkedList linkedList = new LinkedList<String>();
+		LinkedList<String> linkedList = new LinkedList<String>();
 		int i = 0;
 		int j = 0;
 		try {
@@ -70,6 +70,12 @@ public class List {
 		return linkedList;
 	}
 
+	/**
+	 * Implementierung der invertierten Liste
+	 * 
+	 * @param path Pfad, in der die Dateien zur Suche sich befinden.
+	 * @return
+	 */
 	LinkedList<String> makeInvertedList(String path) {
 		String tempString;
 		String out = "";

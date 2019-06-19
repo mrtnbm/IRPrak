@@ -1,12 +1,11 @@
 
 import java.io.File;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Scanner;
 
 /**
- * Main-Methode für den Benutzer, um die Stoppworteliminierung durchführen zu
- * können.
+ * Main-Methode fuer den Benutzer, um wahlweise Stoppworteliminierung, Suche
+ * mithilfe (invertierter) Liste, Stammformreduktion durchfuehren zu koennen.
  * 
  * @author Johannes Wawra, Martin Behm
  *
