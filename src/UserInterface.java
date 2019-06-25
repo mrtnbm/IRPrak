@@ -100,6 +100,9 @@ public class UserInterface {
 		LinkedList<String> linear0 = list.makeLinearList(dirName);
 		LinkedList<String> linear1 = list.makeLinearList(dirName2 + dirName);
 		LinkedList<String> linear2 = list.makeLinearList(dirName3 + dirName);
+		
+		LinkedList<String> signat2 = list.makeSignaturList(dirName3 + dirName);
+		
 		System.out.println("\nInvertierte Listen erstellen? Dies kann einige Minuten dauern. j/n");
 		boolean useInverted = false;
 		LinkedList<String> inverted = null;
