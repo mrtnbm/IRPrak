@@ -101,7 +101,7 @@ public class UserInterface {
 		LinkedList<String> linear1 = list.makeLinearList(dirName2 + dirName);
 		LinkedList<String> linear2 = list.makeLinearList(dirName3 + dirName);
 		
-		LinkedList<String> signat2 = list.makeSignaturList(dirName3 + dirName);
+		LinkedList<String> signat = list.makeSignaturList(dirName);
 		
 		System.out.println("\nInvertierte Listen erstellen? Dies kann einige Minuten dauern. j/n");
 		boolean useInverted = false;
@@ -129,7 +129,10 @@ public class UserInterface {
 				if (input1.equals("0")) {
 					System.out.println("Geben Sie das zu suchende Wort ein!");
 					searchString = scan.next();
-					search.doSearchBool(linear0, searchString);
+					LinkedList<String> resultsBinaer = search.doSearchOr(signat, searchString);
+					LinkedList<String> binaer = list.makeLinearList(dirName, resultsBinaer);
+					search.doSearchBool(binaer, searchString);
+					
 				}
 
 				if (input1.equals("1")) {

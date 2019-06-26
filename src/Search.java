@@ -120,6 +120,8 @@ public class Search {
 		return results;
 	}
 
+	
+		
 	LinkedList<String> boolCombin(LinkedList<String> all) {
 
 		String positionString = all.get(1);
@@ -172,8 +174,13 @@ public class Search {
 		}
 		logic++;
 
-		String word = input.substring(lastPosition, logic); // aktuelles Wort
-
+		String word;
+		if (logic == input.length()) { // wenn letztes Wort erreicht
+			word = input.substring(lastPosition, logic); // aktuelles Wort
+		} else {
+			word = input.substring(lastPosition, logic - 1); // aktuelles Wort
+		}
+		
 		LinkedList<String> results = searchBool(word);
 		{
 			all.remove(0);
@@ -208,6 +215,7 @@ public class Search {
 						resultBool.add(firstWord);
 					}
 				}
+				System.out.println("IST"+resultBool);
 
 			} else if (searchChar.equals("!")) {
 				LinkedList<String> allDocs = searchAll();
@@ -236,4 +244,111 @@ public class Search {
 		}
 	}
 
+	
+
+	LinkedList<String> doSearchOr(LinkedList<String> list, String searchString) {
+		this.searchList = list;
+		LinkedList<String> input = new LinkedList<String>();
+		searchString = searchString.toLowerCase();
+		input.add(searchString);
+		input.add("1"); // lastPositon darf nicht kleiner 1 sein.
+		LinkedList<String> output = orCombin(input);
+		if (output.size() == 0) {
+			System.out.println("Keine Ergebnisse.");
+		}
+
+		return output;
+	}
+
+	
+	LinkedList<String> searchBlock(String searchString) {
+		LinkedList<String> linkList = this.searchList;
+		int i = 0;
+		String tempString;
+		String pathToFile;
+		LinkedList<String> results = new LinkedList<String>();
+
+		for (String string : linkList) {
+			i = string.indexOf("$");
+			tempString = string.substring(0, i);
+			tempString = tempString.toLowerCase();
+			if (tempString.equals(searchString)) {
+				int j = i;
+				do {
+					j++;
+					int k = string.indexOf("$", j);
+					if (k == -1) {
+						k = string.length();
+					}
+					pathToFile = string.substring(j, k);
+					results.add(pathToFile);
+					j = k;
+				} while (j != string.length());
+			}
+		}
+		return results;
+	}
+	
+	
+	LinkedList<String> orCombin(LinkedList<String> all) {
+
+		List binaer = new List();
+		
+		
+		String positionString = all.get(1);
+		int lastPosition = Integer.parseInt(positionString);
+
+		String input = all.get(0);
+
+		String searchChar = input.substring(lastPosition - 1, lastPosition); // logische Operation vor dem Wort
+
+		int logic = input.indexOf("&", lastPosition);
+
+			
+		if (logic == -1) {// letztes Wort erreicht
+			logic = input.length() - 1;
+		}
+		logic++;
+
+		String word = input.substring(lastPosition, logic); // aktuelles Wort
+
+		word = binaer.hashSign(word);
+		
+		{
+			all.remove(0);
+			all.remove(0);
+	
+			if (searchChar.equals("&")) {
+				if(all.size()>2) {
+					String wordSearch = binaer.createBlock(all);
+					LinkedList<String> results = searchBlock(wordSearch);
+					return results;
+				} else {
+					all.add(word);
+				}
+
+			} else { // vor dem Wort existiert kein Ausdruck
+				all.add(word);
+			}
+
+			if (logic == input.length()) { // wenn letztes Wort erreicht
+				if(all.size()>2) {
+					String wordSearch = binaer.createBlock(all);
+					System.out.println(wordSearch);
+					LinkedList<String> results = searchBlock(wordSearch);
+					return results;
+				} else {
+					return new LinkedList<String>();
+				}
+			}
+
+			all.add(0, String.valueOf(logic)); // remember last boolean
+			all.add(0, input);
+			return orCombin(all);
+		}
+	}
+
+	
+	
+	
 }
