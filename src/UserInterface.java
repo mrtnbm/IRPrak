@@ -40,7 +40,7 @@ public class UserInterface {
 		 * currentDirFile.getCanonicalPath().length()); } catch (IOException e) { //
 		 * TODO Auto-generated catch block e.printStackTrace(); }
 		 */
-		String dirName = inputUser + "\\";
+		String dirName = inputUser + "/";
 		File origin = new File(dirName);
 
 		if (origin.mkdir()) {
@@ -53,7 +53,7 @@ public class UserInterface {
 		obj.importText("aesopa10.txt");
 		obj.splitText(obj.str, "Fables", dirName);
 
-		String dirName2 = inputUser2 + "\\";
+		String dirName2 = inputUser2 + "/";
 		File saveDirMain = new File(dirName2);
 		if (saveDirMain.mkdir()) {
 			System.out.println("Ordner" + saveDirMain + " erstellt");
@@ -69,7 +69,7 @@ public class UserInterface {
 			System.out.println(saveDir + " konnte nicht erstellt werden");
 		}
 
-		String dirName3 = inputUser3 + "\\";
+		String dirName3 = inputUser3 + "/";
 		File reductionDirMain = new File(dirName3);
 
 		if (reductionDirMain.mkdir()) {
@@ -110,6 +110,14 @@ public class UserInterface {
 			inverted = list.makeInvertedList(dirName3 + dirName);
 			useInverted = true;
 		}
+		
+		System.out.println("\nVektorraummodell erstellen? Dies kann einige Minuten dauern. j/n");
+		boolean useVektor = false;
+		LinkedList<String> vektor = null;
+		if (scan.next().equals("j")) {
+			inverted = list.makeInvertedSumList(dirName3 + dirName);
+			useVektor = true;
+		}
 
 		String searchString = "";
 		do {
@@ -129,10 +137,9 @@ public class UserInterface {
 				if (input1.equals("0")) {
 					System.out.println("Geben Sie das zu suchende Wort ein!");
 					searchString = scan.next();
-					LinkedList<String> resultsBinaer = search.doSearchOr(signat, searchString);
-					LinkedList<String> binaer = list.makeLinearList(dirName, resultsBinaer);
-					search.doSearchBool(binaer, searchString);
-					
+					LinkedList<String> resultsBinaer = search.doSearchOr(signat, searchString); //KandidatenListe
+					LinkedList<String> binaer = list.makeLinearList(dirName, resultsBinaer); //Lineare Liste zum Suchen
+					search.doSearchBool(binaer, searchString); //Suche mit Kandidaten	
 				}
 
 				if (input1.equals("1")) {

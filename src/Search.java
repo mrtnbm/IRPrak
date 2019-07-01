@@ -215,8 +215,7 @@ public class Search {
 						resultBool.add(firstWord);
 					}
 				}
-				System.out.println("IST"+resultBool);
-
+				
 			} else if (searchChar.equals("!")) {
 				LinkedList<String> allDocs = searchAll();
 				for (String firstWord : allDocs) {
@@ -253,40 +252,8 @@ public class Search {
 		input.add(searchString);
 		input.add("1"); // lastPositon darf nicht kleiner 1 sein.
 		LinkedList<String> output = orCombin(input);
-		if (output.size() == 0) {
-			System.out.println("Keine Ergebnisse.");
-		}
-
-		return output;
-	}
-
 	
-	LinkedList<String> searchBlock(String searchString) {
-		LinkedList<String> linkList = this.searchList;
-		int i = 0;
-		String tempString;
-		String pathToFile;
-		LinkedList<String> results = new LinkedList<String>();
-
-		for (String string : linkList) {
-			i = string.indexOf("$");
-			tempString = string.substring(0, i);
-			tempString = tempString.toLowerCase();
-			if (tempString.equals(searchString)) {
-				int j = i;
-				do {
-					j++;
-					int k = string.indexOf("$", j);
-					if (k == -1) {
-						k = string.length();
-					}
-					pathToFile = string.substring(j, k);
-					results.add(pathToFile);
-					j = k;
-				} while (j != string.length());
-			}
-		}
-		return results;
+		return output;
 	}
 	
 	
@@ -302,50 +269,108 @@ public class Search {
 
 		String searchChar = input.substring(lastPosition - 1, lastPosition); // logische Operation vor dem Wort
 
-		int logic = input.indexOf("&", lastPosition);
+		int orIndex = input.indexOf("|", lastPosition);
+		int andIndex = input.indexOf("&", lastPosition);
+		int logic = -1; // gibt Ende des Wortes an
 
+		if (orIndex == -1) { // minimales naechstes Zeichen
+			if (andIndex == -1) {
+			} else {
+				logic = andIndex;
+			}
+		} else if (andIndex == -1) {
+				logic = orIndex; 
+		} else {
+			logic = Math.min(orIndex, andIndex);
+		}
 			
 		if (logic == -1) {// letztes Wort erreicht
-			logic = input.length() - 1;
+			logic = input.length();
 		}
-		logic++;
-
+				
 		String word = input.substring(lastPosition, logic); // aktuelles Wort
-
 		word = binaer.hashSign(word);
 		
+		LinkedList<String> resultBool = new LinkedList<String>(); //Ausgabeliste
+		LinkedList<String> results = searchSignature(word);
 		{
 			all.remove(0);
 			all.remove(0);
 	
-			if (searchChar.equals("&")) {
-				if(all.size()>2) {
-					String wordSearch = binaer.createBlock(all);
-					LinkedList<String> results = searchBlock(wordSearch);
-					return results;
-				} else {
-					all.add(word);
+			if (searchChar.equals("|")) {
+				for (String firstPath : all) {
+					int i = results.indexOf(firstPath);
+					if (i == -1) {// Pfad ist nicht im Ergebnis enthalten
+						resultBool.add(firstPath); // Pfad wird hinzugefuegt
+					} else { // Pfad ist in im Ergebnis enthalten
+						resultBool.add(firstPath); // Pfad wird hinzugefuegt
+						results.remove(i); // Pfad wird aus Ergebnis entfernt.
+					}
 				}
-
+				resultBool.addAll(results); // Pfade aus Ergebnis, die nicht bereits vorhanden sind, hinzufuegen
+				all = resultBool;
+			} else if (searchChar.equals("&")) {
+				for (String firstWord : all) {
+					if (results.contains(firstWord)) {
+						resultBool.add(firstWord);
+					}
+				}
+				all = resultBool;
 			} else { // vor dem Wort existiert kein Ausdruck
-				all.add(word);
+				word = input.substring(lastPosition - 1, logic); // aktuelles Wort
+				word = binaer.hashSign(word);
+				all = searchSignature(word);
+			}
+			
+			if (logic == input.length()) { // beim letzten Wort
+				return all;		
 			}
 
-			if (logic == input.length()) { // wenn letztes Wort erreicht
-				if(all.size()>2) {
-					String wordSearch = binaer.createBlock(all);
-					System.out.println(wordSearch);
-					LinkedList<String> results = searchBlock(wordSearch);
-					return results;
-				} else {
-					return new LinkedList<String>();
-				}
-			}
-
+			logic++;
 			all.add(0, String.valueOf(logic)); // remember last boolean
 			all.add(0, input);
 			return orCombin(all);
 		}
+	}
+
+	private LinkedList<String> searchSignature(String word) {
+		LinkedList<String> linkList = this.searchList;
+		int i = 0;
+		String tempString;
+		String pathToFile;
+		LinkedList<String> results = new LinkedList<String>();
+
+		for (String string : linkList) {
+			i = string.indexOf("$");
+			tempString = string.substring(0, i);
+			tempString = tempString.toLowerCase();
+			if (compareAnd(tempString,word)) {
+				int j = i;
+				do {
+					j++;
+					int k = string.indexOf("$", j);
+					if (k == -1) {
+						k = string.length();
+					}
+					pathToFile = string.substring(j, k);
+					results.add(pathToFile);
+					j = k;
+				} while (j != string.length());
+			}
+		}
+		return results;
+	}
+
+	private boolean compareAnd(String tempString, String word) {
+		for(int i = 0; i<word.length(); i++) {
+			char a = tempString.charAt(i);
+			if(a == word.charAt(i)) {
+				if(a == '1') { //beide Werte muessen 1 sein, damit logisches UND erfuellt
+					return true;					
+				}
+			}
+		}
+		return false;
 	}
 
 	
