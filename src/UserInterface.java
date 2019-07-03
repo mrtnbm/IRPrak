@@ -100,9 +100,10 @@ public class UserInterface {
 		LinkedList<String> linear0 = list.makeLinearList(dirName);
 		LinkedList<String> linear1 = list.makeLinearList(dirName2 + dirName);
 		LinkedList<String> linear2 = list.makeLinearList(dirName3 + dirName);
-		
+
 		LinkedList<String> signat = list.makeSignaturList(dirName);
-		
+		LinkedList<String> vektorList = new LinkedList<String>();
+
 		System.out.println("\nInvertierte Listen erstellen? Dies kann einige Minuten dauern. j/n");
 		boolean useInverted = false;
 		LinkedList<String> inverted = null;
@@ -110,12 +111,12 @@ public class UserInterface {
 			inverted = list.makeInvertedList(dirName3 + dirName);
 			useInverted = true;
 		}
-		
+
 		System.out.println("\nVektorraummodell erstellen? Dies kann einige Minuten dauern. j/n");
 		boolean useVektor = false;
 		LinkedList<String> vektor = null;
 		if (scan.next().equals("j")) {
-			inverted = list.makeInvertedSumList(dirName3 + dirName);
+			vektorList = list.makeInvertedSumList(dirName3 + dirName);
 			useVektor = true;
 		}
 
@@ -129,17 +130,18 @@ public class UserInterface {
 			System.out.println("Fuer Suche ohne Stoppwoerter drueken Sie die 1.");
 			System.out.println("Fuer Suche mit Stammformreduktion druecken Sie die 2.");
 			System.out.println("Fuer Evaluation druecken Sie die 3.");
+			System.out.println("Fuer Vektorraumsuche druecken Sie die 4");
 			String input1 = scan.next();
 
-			if (input1.equals("0") || input1.equals("1") || input1.equals("2") || input1.equals("3")
+			if (input1.equals("0") || input1.equals("1") || input1.equals("2") || input1.equals("3")|| input1.equals("4")
 					|| input1.equals("exit")) {
 
 				if (input1.equals("0")) {
 					System.out.println("Geben Sie das zu suchende Wort ein!");
 					searchString = scan.next();
-					LinkedList<String> resultsBinaer = search.doSearchOr(signat, searchString); //KandidatenListe
-					LinkedList<String> binaer = list.makeLinearList(dirName, resultsBinaer); //Lineare Liste zum Suchen
-					search.doSearchBool(binaer, searchString); //Suche mit Kandidaten	
+					LinkedList<String> resultsBinaer = search.doSearchOr(signat, searchString); // KandidatenListe
+					LinkedList<String> binaer = list.makeLinearList(dirName, resultsBinaer); // Lineare Liste zum Suchen
+					search.doSearchBool(binaer, searchString); // Suche mit Kandidaten
 				}
 
 				if (input1.equals("1")) {
@@ -160,6 +162,17 @@ public class UserInterface {
 				if (input1.equals("3")) {
 					Evaluate e = new Evaluate();
 					e.evaluate("ground_truth_correct.txt", linear2);
+				}
+
+				if (input1.equals("4")) {
+					if (useVektor) {
+						System.out.println("Bitte geben Sie den zu suchenden Text an!");
+						String word = scan.next();
+
+						search.sortDocuments(dirName3 + dirName, word, vektorList);
+					} else {
+						System.out.println("VektorListe wurde nicht erstellt!");
+					}
 				}
 
 				if (input1.equals("exit")) {

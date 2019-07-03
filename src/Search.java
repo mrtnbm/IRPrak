@@ -1,5 +1,17 @@
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.Collator;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.stream.Stream;
 
 /**
  * Für das Suchen eines Wortes in allen Fabeln.
@@ -120,8 +132,6 @@ public class Search {
 		return results;
 	}
 
-	
-		
 	LinkedList<String> boolCombin(LinkedList<String> all) {
 
 		String positionString = all.get(1);
@@ -180,7 +190,7 @@ public class Search {
 		} else {
 			word = input.substring(lastPosition, logic - 1); // aktuelles Wort
 		}
-		
+
 		LinkedList<String> results = searchBool(word);
 		{
 			all.remove(0);
@@ -215,7 +225,7 @@ public class Search {
 						resultBool.add(firstWord);
 					}
 				}
-				
+
 			} else if (searchChar.equals("!")) {
 				LinkedList<String> allDocs = searchAll();
 				for (String firstWord : allDocs) {
@@ -243,8 +253,6 @@ public class Search {
 		}
 	}
 
-	
-
 	LinkedList<String> doSearchOr(LinkedList<String> list, String searchString) {
 		this.searchList = list;
 		LinkedList<String> input = new LinkedList<String>();
@@ -252,16 +260,14 @@ public class Search {
 		input.add(searchString);
 		input.add("1"); // lastPositon darf nicht kleiner 1 sein.
 		LinkedList<String> output = orCombin(input);
-	
+
 		return output;
 	}
-	
-	
+
 	LinkedList<String> orCombin(LinkedList<String> all) {
 
 		List binaer = new List();
-		
-		
+
 		String positionString = all.get(1);
 		int lastPosition = Integer.parseInt(positionString);
 
@@ -279,24 +285,24 @@ public class Search {
 				logic = andIndex;
 			}
 		} else if (andIndex == -1) {
-				logic = orIndex; 
+			logic = orIndex;
 		} else {
 			logic = Math.min(orIndex, andIndex);
 		}
-			
+
 		if (logic == -1) {// letztes Wort erreicht
 			logic = input.length();
 		}
-				
+
 		String word = input.substring(lastPosition, logic); // aktuelles Wort
 		word = binaer.hashSign(word);
-		
-		LinkedList<String> resultBool = new LinkedList<String>(); //Ausgabeliste
+
+		LinkedList<String> resultBool = new LinkedList<String>(); // Ausgabeliste
 		LinkedList<String> results = searchSignature(word);
 		{
 			all.remove(0);
 			all.remove(0);
-	
+
 			if (searchChar.equals("|")) {
 				for (String firstPath : all) {
 					int i = results.indexOf(firstPath);
@@ -321,9 +327,9 @@ public class Search {
 				word = binaer.hashSign(word);
 				all = searchSignature(word);
 			}
-			
+
 			if (logic == input.length()) { // beim letzten Wort
-				return all;		
+				return all;
 			}
 
 			logic++;
@@ -344,7 +350,7 @@ public class Search {
 			i = string.indexOf("$");
 			tempString = string.substring(0, i);
 			tempString = tempString.toLowerCase();
-			if (compareAnd(tempString,word)) {
+			if (compareAnd(tempString, word)) {
 				int j = i;
 				do {
 					j++;
@@ -362,18 +368,209 @@ public class Search {
 	}
 
 	private boolean compareAnd(String tempString, String word) {
-		for(int i = 0; i<word.length(); i++) {
+		for (int i = 0; i < word.length(); i++) {
 			char a = tempString.charAt(i);
-			if(a == word.charAt(i)) {
-				if(a == '1') { //beide Werte muessen 1 sein, damit logisches UND erfuellt
-					return true;					
+			if (a == word.charAt(i)) {
+				if (a == '1') { // beide Werte muessen 1 sein, damit logisches UND erfuellt
+					return true;
 				}
 			}
 		}
 		return false;
 	}
 
+	double sumWordFrequency(String file, String pathString) {
+		double bigN = 0;
+		int bigNi = 0;
+
+		final File folder = new File(pathString);
+		for (final File fileEntry : folder.listFiles()) {
+			bigNi++;
+		}
+		bigN = bigNi;
+
+		int i = 0;
+		String invertedWord = "";
+		String out;
+
+		FileReader fr;
+
+		double outNumber = 0;
+
+		try {
+			fr = new FileReader(pathString + file);
+			BufferedReader br = new BufferedReader(fr);
+
+			out = "";
+
+			String tempString;
+			do {
+
+				tempString = br.readLine();
+				out += tempString;
+			} while (tempString != null);
+
+			int j = out.indexOf(" ", i);
+			LinkedList<String> found = new LinkedList<String>();
+
+			do { // durch das Dokument durchgehen und alle Woerter ermitteln
+				if ((i != j) && (j < out.length() - 1) && (i < out.length() - 1) && (j != -1)) {
+					invertedWord = out.substring(i, j);
+				}
+				i = j;
+
+				double tfdi = 0;
+				int ni = 0;
+
+				for (int wordIndex = 0; wordIndex < searchList.size(); wordIndex++) {
+					String entry = searchList.get(wordIndex);
+
+					String word = entry.substring(0, entry.indexOf("$"));
+					if (invertedWord.equals(word)) {
+						if (!found.contains(word)) {
+							found.add(word);
+
+							int position = entry.indexOf(file);
+							if (position == -1) { // Das Wort existiert, aber nicht fuer dieses Dokument
+
+							} else {
+								position = entry.indexOf("@", position + 1);
+								int positionEnd = entry.indexOf("$", position);
+								if (positionEnd == -1) {
+									positionEnd = entry.length();
+								}
+
+								String number = entry.substring(position + 1, positionEnd);
+								tfdi = Integer.valueOf(number);
+
+								int indexPath = 0;
+
+								do {
+									indexPath = entry.indexOf("$", indexPath);
+									indexPath++;
+									ni++;
+								} while (indexPath != 0);
+							}
+						}
+					}
+
+				}
+
+				if (ni != 0) {
+					double tempNumber = Math.log(bigN / ((double) ni));
+					double sumNumber = Math.pow((tfdi * tempNumber), 2);
+
+					outNumber += sumNumber;
+				}
+				i++;
+
+				j = out.indexOf(" ", i);
+
+				// Abfangen, wenn es keinen Inhalt mehr mit " " gibt
+			} while (j != -1);
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return Math.pow(outNumber, 0.5);
+	}
+
+	double wordFrequency(String file, String pathString, String word) {
+		double bigN = 0;
+		int bigNi = 0;
+
+		final File folder = new File(pathString);
+		for (final File fileEntry : folder.listFiles()) {
+			bigNi++;
+		}
+		bigN = bigNi;
+
+		double tfdk = 0;
+		int nk = 0;
+
+		for (int wordIndex = 0; wordIndex < searchList.size(); wordIndex++) {
+			String entry = searchList.get(wordIndex);
+			String entryWord = entry.substring(0, entry.indexOf("$"));
+
+			if (word.equals(entryWord)) {
+				int position = entry.indexOf(file);
+				if (position == -1) { // Das Wort existiert, aber nicht fuer dieses Dokument
+
+				} else {
+					position = entry.indexOf("@", position + 1);
+					int positionEnd = entry.indexOf("$", position);
+					if (positionEnd == -1) {
+						positionEnd = entry.length();
+					}
+
+					String number = entry.substring(position + 1, positionEnd);
+					tfdk = Integer.valueOf(number);
+
+					int indexPath = 0;
+
+					do {
+						indexPath = entry.indexOf("$", indexPath);
+						indexPath++;
+						nk++;
+					} while (indexPath != 0);
+
+					double tempNumber = Math.log(bigN / ((double) nk));
+					double out = tfdk * tempNumber;
+					return out;
+
+				}
+			}
+		}
+		return -1.0;
+	}
+
+	double getWeight(String file, String path, String word) {
+		double freq = wordFrequency(file, path, word);
+		double norm = sumWordFrequency(file, path);
+		return freq / norm;
+	}
 	
+	LinkedList<String> sortDocuments(String path, String word, LinkedList<String> vektorList){
+		LinkedList<String> out = new LinkedList<String>();
+		searchList = vektorList;
+		System.out.print("Ergebnis wird berechnet");
+		final File folder = new File(path);
+		for (final File file : folder.listFiles()) {
+			String filename = file.getName();
+			double weight = getWeight(filename, path, word);
+			
+			if(weight>0) {
+				out.add(weight+"$"+filename);				
+			}
+			
+			System.out.print(".");
+		}
+		System.out.println();
+		
+		Collections.sort(out, new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				return Collator.getInstance().compare(o1, o2);
+			}
+		});
+		
+		
+		int i = 0;
+		for(String o : out) {
+			i++;
+			System.out.println(o);
+			if (i>20) {
+				break;
+			}
+		}
+		
+		return out;
+	}
 	
 	
 }
