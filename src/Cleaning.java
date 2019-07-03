@@ -99,7 +99,7 @@ public class Cleaning {
 	void openSave(String readPath, String writePath) {
 		String temp;
 		String out = "";
-		String string = "";
+		String content = "";
 
 		try {
 
@@ -112,16 +112,30 @@ public class Cleaning {
 
 				do {
 					temp = br.readLine();
-					out += temp;
+					out += temp + "/n";
 				} while (temp != null);
 
-				string = elimStopWords(out);
+				content = elimStopWords(out);
 
 				// Datei wird dann in path/file.txt geschrieben
 				FileWriter fw = new FileWriter(writePath + fileEntry.getPath());
 				BufferedWriter bw = new BufferedWriter(fw);
 
-				bw.write(string);
+				int line = 0;
+				int nextLine = 0;
+				do {
+					nextLine = content.indexOf("/n", line);
+					if(nextLine == -1) {
+						nextLine = content.length();
+					}
+					temp = content.substring(line, nextLine);
+					bw.write(temp);
+					bw.newLine();
+					line = 2 + nextLine;
+					
+				} while (nextLine != content.length());
+
+
 				bw.close();
 				br.close();
 			}

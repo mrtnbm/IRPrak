@@ -130,7 +130,22 @@ public class Document {
 			try {
 				FileWriter fw = new FileWriter(saveTo + title);
 				BufferedWriter bw = new BufferedWriter(fw);
-				bw.write(content);
+				
+				int line = 0;
+				int nextLine = 0;
+				String temp;
+				do {
+					nextLine = content.indexOf("/n", line);
+					if(nextLine == -1) {
+						nextLine = content.length();
+					}
+					temp = content.substring(line, nextLine);
+					bw.write(temp);
+					bw.newLine();
+					line = 2 + nextLine;
+					
+				} while (nextLine != content.length());
+
 				bw.close();
 
 			} catch (IOException e) {

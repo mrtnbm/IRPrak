@@ -531,8 +531,12 @@ public class Search {
 
 	double getWeight(String file, String path, String word) {
 		double freq = wordFrequency(file, path, word);
-		double norm = sumWordFrequency(file, path);
-		return freq / norm;
+		if(freq>=0) {
+			double norm = sumWordFrequency(file, path);
+			return freq / norm;			
+		} else {
+			return -1.0;
+		}
 	}
 	
 	LinkedList<String> sortDocuments(String path, String word, LinkedList<String> vektorList){
@@ -544,7 +548,7 @@ public class Search {
 			String filename = file.getName();
 			double weight = getWeight(filename, path, word);
 			
-			if(weight>0) {
+			if(weight>=0) {
 				out.add(weight+"$"+filename);				
 			}
 			
@@ -555,18 +559,13 @@ public class Search {
 		Collections.sort(out, new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				return Collator.getInstance().compare(o1, o2);
+				return Collator.getInstance().compare(o2, o1);
 			}
 		});
 		
 		
-		int i = 0;
 		for(String o : out) {
-			i++;
 			System.out.println(o);
-			if (i>20) {
-				break;
-			}
 		}
 		
 		return out;
