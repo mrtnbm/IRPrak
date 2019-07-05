@@ -116,7 +116,7 @@ public class UserInterface {
 		boolean useVektor = false;
 		LinkedList<String> vektor = null;
 		if (scan.next().equals("j")) {
-			vektorList = list.makeInvertedSumList(dirName3 + dirName);
+			vektorList = list.makeInvertedSumList(dirName2 + dirName);
 			useVektor = true;
 		}
 
@@ -166,10 +166,9 @@ public class UserInterface {
 
 				if (input1.equals("4")) {
 					if (useVektor) {
-						System.out.println("Bitte geben Sie den zu suchenden Text an!");
-						String word = scan.next();
-
-						search.sortDocuments(dirName3 + dirName, word, vektorList);
+						System.out.println("Bitte geben Sie den zu suchenden Text mit \",\" statt \" \" an!");
+						String text = scan.next();
+						search.baseAlgorithm(text, vektorList, dirName2 + dirName);
 					} else {
 						System.out.println("VektorListe wurde nicht erstellt!");
 					}

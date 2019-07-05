@@ -531,15 +531,15 @@ public class Search {
 
 	double getWeight(String file, String path, String word) {
 		double freq = wordFrequency(file, path, word);
-		if(freq>=0) {
+		if (freq >= 0) {
 			double norm = sumWordFrequency(file, path);
-			return freq / norm;			
+			return freq / norm;
 		} else {
 			return -1.0;
 		}
 	}
-	
-	LinkedList<String> sortDocuments(String path, String word, LinkedList<String> vektorList){
+
+	LinkedList<String> sortDocuments(String path, String word, LinkedList<String> vektorList) {
 		LinkedList<String> out = new LinkedList<String>();
 		searchList = vektorList;
 		System.out.print("Ergebnis wird berechnet");
@@ -547,29 +547,183 @@ public class Search {
 		for (final File file : folder.listFiles()) {
 			String filename = file.getName();
 			double weight = getWeight(filename, path, word);
-			
-			if(weight>=0) {
-				out.add(weight+"$"+filename);				
+
+			if (weight >= 0) {
+				out.add(weight + "$" + filename);
 			}
-			
+
 			System.out.print(".");
 		}
 		System.out.println();
-		
+
 		Collections.sort(out, new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
 				return Collator.getInstance().compare(o2, o1);
 			}
 		});
-		
-		
-		for(String o : out) {
+
+		for (String o : out) {
 			System.out.println(o);
 		}
-		
+
 		return out;
 	}
-	
-	
+
+	void baseAlgorithm(String query, LinkedList<String> slist, String pathString) {
+		searchList = slist;
+
+		int bigN = 0;
+		final File folder = new File(pathString);
+		for (final File fileEntry : folder.listFiles()) {
+			bigN++;
+		}
+
+		double outNumber = 0;
+		int j;
+		String queryWord;
+
+		int maxNumber = 1;
+		LinkedList<String> found = new LinkedList<String>();
+		int i = -1;
+
+		do { // Alle Woerter der Anfrage
+
+			i++;
+			j = query.indexOf(",", i);
+			if (j == -1) {
+				j = query.length();
+			}
+			queryWord = query.substring(i, j);
+
+			boolean didFound = false;
+			for (int k = 0; k < found.size(); k++) {
+				String f = found.get(k);
+
+				String foundWord = f.substring(f.indexOf("$") + 1, f.length());
+				if (foundWord.equals(queryWord)) {
+					didFound = true;
+					String numberString = f.substring(0, f.indexOf("$"));
+					int number = Integer.valueOf(numberString);
+					number++;
+
+					if (number > maxNumber) {
+						maxNumber = number;
+					}
+
+					numberString = String.valueOf(number);
+					numberString = ("000" + numberString).substring(numberString.length());
+
+					found.set(k, numberString + "$" + queryWord);
+				}
+			}
+			if (!didFound) {
+				found.add("001" + "$" + queryWord);
+			}
+
+			i = j;
+
+			// Abfangen, wenn es keinen Inhalt mehr mit " " gibt
+		} while (j != query.length());
+
+		Collections.sort(found, new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				return Collator.getInstance().compare(o2, o1);
+			}
+		});
+
+		LinkedList<String> documents = new LinkedList<String>();
+		LinkedList<String> temp = new LinkedList<String>();
+
+		for (String f : found) {
+			System.out.println(f);
+			
+			f = f.substring(f.indexOf("$") + 1, f.length());
+			double wqk = saltonBuckley(found, maxNumber, query, f, bigN);
+			temp = sortDocuments(pathString, f, slist);
+
+			for (String t : temp) {
+				String wdkString = t.substring(0, t.indexOf("$"));
+				String name = t.substring(t.indexOf("$"), t.length());
+				double wdk = Double.valueOf(wdkString);
+				double weight = wdk * wqk;
+				boolean exist = false;
+				for (int z = 0; z < documents.size(); z++) {
+					String d = documents.get(z);
+
+					String wName = d.substring(d.indexOf("$"), d.length());
+					if (wName.equals(name)) {
+						exist = true;
+						String wString = d.substring(0, d.indexOf("$"));
+						double w = Double.valueOf(wString);
+						double sumWeight = w + weight;
+						documents.set(z, sumWeight + name);
+					}
+				}
+				if (!exist) {
+					documents.add(weight + name);
+				}
+			}
+			
+
+		}
+		
+		Collections.sort(documents, new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				return Collator.getInstance().compare(o2, o1);
+			}
+		});
+
+		System.out.println("=========================================================");
+		System.out.println("Das Ergebnis ist:");
+		for (String d : documents) {
+			System.out.println(d);
+		}
+
+	}
+
+	double saltonBuckley(LinkedList<String> found, int maxNumber, String query, String word, int bigN) {
+
+		String invertedWord = "";
+
+		double tfqk = 0;
+
+		for (String f : found) {
+			String foundWord = f.substring(0, f.indexOf("$"));
+			if (foundWord.equals(word)) {
+				String numberString = f.substring(f.indexOf("$") + 1, f.length());
+				tfqk = Integer.valueOf(numberString);
+				break;
+			}
+		}
+
+		int nk = 0;
+
+		for (int wordIndex = 0; wordIndex < searchList.size(); wordIndex++) {
+			String entry = searchList.get(wordIndex);
+			invertedWord = entry.substring(0, entry.indexOf("$"));
+			if (invertedWord.equals(word)) {
+
+				int indexPath = 0;
+
+				do {
+					indexPath = entry.indexOf("$", indexPath);
+					indexPath++;
+					nk++;
+				} while (indexPath != 0);
+			}
+		}
+
+		if (nk != 0) {
+			double weight = (0.5 + (0.5 * tfqk) / maxNumber) * Math.log(bigN / nk);
+			System.out.println(weight);
+			return weight;
+		}
+
+		return 0.0;
+
+	}
+
 }
