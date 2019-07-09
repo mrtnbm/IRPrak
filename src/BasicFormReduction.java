@@ -621,6 +621,7 @@ public class BasicFormReduction {
 		return word;
 	}
 
+	
 	String step5b(String word, String mWord) {
 		String temp = mWord.substring(1, mWord.length() - 1);
 		int m = Integer.parseInt(temp);
@@ -633,6 +634,12 @@ public class BasicFormReduction {
 		return word;
 	}
 
+	/**
+	 * Anwenden der Regeln des Algorithmus
+	 * 
+	 * @param word
+	 * @return String abgeschnittene Woerter
+	 */
 	String applyRules(String word) {
 		String vcWord = convertCV(word);
 		String mWord = convertM(vcWord);
@@ -726,14 +733,14 @@ public class BasicFormReduction {
 				int nextLine = 0;
 				do {
 					nextLine = content.indexOf("/n", line);
-					if(nextLine == -1) {
+					if (nextLine == -1) {
 						nextLine = content.length();
 					}
 					temp = content.substring(line, nextLine);
 					bw.write(temp);
 					bw.newLine();
 					line = 2 + nextLine;
-					
+
 				} while (nextLine != content.length());
 
 				bw.close();

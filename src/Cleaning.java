@@ -125,16 +125,15 @@ public class Cleaning {
 				int nextLine = 0;
 				do {
 					nextLine = content.indexOf("/n", line);
-					if(nextLine == -1) {
+					if (nextLine == -1) {
 						nextLine = content.length();
 					}
 					temp = content.substring(line, nextLine);
 					bw.write(temp);
 					bw.newLine();
 					line = 2 + nextLine;
-					
-				} while (nextLine != content.length());
 
+				} while (nextLine != content.length());
 
 				bw.close();
 				br.close();

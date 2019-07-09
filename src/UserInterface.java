@@ -133,8 +133,8 @@ public class UserInterface {
 			System.out.println("Fuer Vektorraumsuche druecken Sie die 4");
 			String input1 = scan.next();
 
-			if (input1.equals("0") || input1.equals("1") || input1.equals("2") || input1.equals("3")|| input1.equals("4")
-					|| input1.equals("exit")) {
+			if (input1.equals("0") || input1.equals("1") || input1.equals("2") || input1.equals("3")
+					|| input1.equals("4") || input1.equals("exit")) {
 
 				if (input1.equals("0")) {
 					System.out.println("Geben Sie das zu suchende Wort ein!");

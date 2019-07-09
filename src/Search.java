@@ -379,6 +379,13 @@ public class Search {
 		return false;
 	}
 
+	/**
+	 * Errechnung des Nenners der Salton-Formel
+	 * 
+	 * @param file       Dokument, mit dem die Formel berechnet werden soll
+	 * @param pathString Pfad, indem sich die Datei befindet.
+	 * @return double
+	 */
 	double sumWordFrequency(String file, String pathString) {
 		double bigN = 0;
 		int bigNi = 0;
@@ -480,6 +487,14 @@ public class Search {
 		return Math.pow(outNumber, 0.5);
 	}
 
+	/**
+	 * Errechnung des Zaehlers der Salton-Formel
+	 * 
+	 * @param file
+	 * @param pathString Pfadstring
+	 * @param word
+	 * @return double
+	 */
 	double wordFrequency(String file, String pathString, String word) {
 		double bigN = 0;
 		int bigNi = 0;
@@ -529,6 +544,14 @@ public class Search {
 		return -1.0;
 	}
 
+	/**
+	 * Errechnung des Gewichts mithilfe der Salton-Formel
+	 * 
+	 * @param file s.o
+	 * @param path Pfad, in dem die Dokumente sich befinden
+	 * @param word
+	 * @return double
+	 */
 	double getWeight(String file, String path, String word) {
 		double freq = wordFrequency(file, path, word);
 		if (freq >= 0) {
@@ -539,6 +562,14 @@ public class Search {
 		}
 	}
 
+	/**
+	 * Sortierung der Gewichte in aufsteigender Reihenfolge
+	 * 
+	 * @param path
+	 * @param word
+	 * @param vektorList
+	 * @return
+	 */
 	LinkedList<String> sortDocuments(String path, String word, LinkedList<String> vektorList) {
 		LinkedList<String> out = new LinkedList<String>();
 		searchList = vektorList;
@@ -570,6 +601,13 @@ public class Search {
 		return out;
 	}
 
+	/**
+	 * Basisalgorithmus fuer invertierte Listen nach Henrich
+	 * 
+	 * @param query      Anfragevektor
+	 * @param slist      Suchliste
+	 * @param pathString Pfade der Dokumente
+	 */
 	void baseAlgorithm(String query, LinkedList<String> slist, String pathString) {
 		searchList = slist;
 
@@ -638,7 +676,7 @@ public class Search {
 
 		for (String f : found) {
 			System.out.println(f);
-			
+
 			f = f.substring(f.indexOf("$") + 1, f.length());
 			double wqk = saltonBuckley(found, maxNumber, query, f, bigN);
 			temp = sortDocuments(pathString, f, slist);
@@ -665,10 +703,9 @@ public class Search {
 					documents.add(weight + name);
 				}
 			}
-			
 
 		}
-		
+
 		Collections.sort(documents, new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
@@ -684,6 +721,17 @@ public class Search {
 
 	}
 
+	/**
+	 * Errechnen des Anfragevektors mithilfe der Salton-Buckley Formel
+	 * 
+	 * @param found     bool Wort gefunde
+	 * @param maxNumber groesste Vorkommenszahl eines Wortes
+	 * @param query     Anfrage
+	 * @param word
+	 * @param bigN      N sei die Anzahl der Dokumente in unserer
+	 *                  Dokumentenkollektion
+	 * @return double Anfragegewicht
+	 */
 	double saltonBuckley(LinkedList<String> found, int maxNumber, String query, String word, int bigN) {
 
 		String invertedWord = "";
