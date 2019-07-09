@@ -83,6 +83,12 @@ public class Search {
 		return numbers;
 	}
 
+	/**
+	 * Berechnet die Dokumente, in denen das Wort vorkommt
+	 * 
+	 * @param searchString das zu suchende Wort
+	 * @return
+	 */
 	LinkedList<String> searchBool(String searchString) {
 		LinkedList<String> linkList = this.searchList;
 		int i = 0;
@@ -112,6 +118,12 @@ public class Search {
 
 	}
 
+	/**
+	 * gibt alle Dokumente zurueck, die die Woerter aus der SearchList enthalten,
+	 * benutzt boolCombin als rekursive Suche
+	 * 
+	 * @return
+	 */
 	LinkedList<String> searchAll() {
 		LinkedList<String> linkList = this.searchList;
 		int i = 0;
@@ -132,6 +144,13 @@ public class Search {
 		return results;
 	}
 
+	/**
+	 * rekursive Funktion fuer die boolsche Suche mit |,&,!
+	 * 
+	 * @param all all[0]m ist der zu suchende Eingabestring/Anfrage, all[1] ist der
+	 *            Index in der Anfrage all[2..ende] die gefundenen Dokumente
+	 * @return die Dokumente die der Suche entsprechen
+	 */
 	LinkedList<String> boolCombin(LinkedList<String> all) {
 
 		String positionString = all.get(1);
@@ -253,6 +272,14 @@ public class Search {
 		}
 	}
 
+	/**
+	 * Boolsche Suche fuer Signaturverfahren, nur | und & moeglich benutzt orCombin
+	 * als rekursive Suche
+	 * 
+	 * @param list         die Suchliste
+	 * @param searchString der zu suchende Text
+	 * @return
+	 */
 	LinkedList<String> doSearchOr(LinkedList<String> list, String searchString) {
 		this.searchList = list;
 		LinkedList<String> input = new LinkedList<String>();
@@ -264,6 +291,12 @@ public class Search {
 		return output;
 	}
 
+	/**
+	 * rekursive Suche nur mit | und & auf Signaturen
+	 * 
+	 * @param all siehe boolCombin()
+	 * @return
+	 */
 	LinkedList<String> orCombin(LinkedList<String> all) {
 
 		List binaer = new List();
@@ -339,6 +372,13 @@ public class Search {
 		}
 	}
 
+	/**
+	 * sucht Dokumente, die der Signatur des Wortes entsprechen (Vergleich mit
+	 * compareAnd() auf durch Signatur gesetzte Bits)
+	 * 
+	 * @param word die zu suchende Signatur
+	 * @return
+	 */
 	private LinkedList<String> searchSignature(String word) {
 		LinkedList<String> linkList = this.searchList;
 		int i = 0;
@@ -367,6 +407,13 @@ public class Search {
 		return results;
 	}
 
+	/**
+	 * vergleicht mit logischem und
+	 * 
+	 * @param tempString das zu vergleichende Wort
+	 * @param word       das zu pruefende Wort
+	 * @return
+	 */
 	private boolean compareAnd(String tempString, String word) {
 		for (int i = 0; i < word.length(); i++) {
 			char a = tempString.charAt(i);
@@ -488,11 +535,12 @@ public class Search {
 	}
 
 	/**
-	 * Errechnung des Zaehlers der Salton-Formel
+	 * Errechnung des Zaehlers der Salton-Formel, -1 wenn das Wort nicht in der
+	 * Datei vorkommt.
 	 * 
-	 * @param file
-	 * @param pathString Pfadstring
-	 * @param word
+	 * @param file       die Datei, in der das Wort vorkommen soll
+	 * @param pathString Pfadstring fuer alle Dateien
+	 * @param word       das zu suchene Wort
 	 * @return double
 	 */
 	double wordFrequency(String file, String pathString, String word) {
@@ -558,16 +606,16 @@ public class Search {
 			double norm = sumWordFrequency(file, path);
 			return freq / norm;
 		} else {
-			return -1.0;
+			return -1.0; // wenn das Wort nicht gefunden wurde
 		}
 	}
 
 	/**
 	 * Sortierung der Gewichte in aufsteigender Reihenfolge
 	 * 
-	 * @param path
-	 * @param word
-	 * @param vektorList
+	 * @param path       Pfad zu allen Dateien
+	 * @param word       das zu pruefende Wort
+	 * @param vektorList die Liste mit den Vorkommenshaeufigkeiten
 	 * @return
 	 */
 	LinkedList<String> sortDocuments(String path, String word, LinkedList<String> vektorList) {
@@ -602,7 +650,7 @@ public class Search {
 	}
 
 	/**
-	 * Basisalgorithmus fuer invertierte Listen nach Henrich
+	 * Basisalgorithmus fuer die Gewichtung der Woerter der Anfrage nach Henrich
 	 * 
 	 * @param query      Anfragevektor
 	 * @param slist      Suchliste

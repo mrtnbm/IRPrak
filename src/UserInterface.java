@@ -131,27 +131,26 @@ public class UserInterface {
 			System.out.println("Fuer Suche mit Stammformreduktion druecken Sie die 2.");
 			System.out.println("Fuer Evaluation druecken Sie die 3.");
 			System.out.println("Fuer Vektorraumsuche druecken Sie die 4");
+			System.out.println("Fuer Suche mit Signatur-Vorfilterung (nur | und & moeglich) druecken Sie die 5");
 			String input1 = scan.next();
 
 			if (input1.equals("0") || input1.equals("1") || input1.equals("2") || input1.equals("3")
-					|| input1.equals("4") || input1.equals("exit")) {
+					|| input1.equals("4") || input1.equals("5") || input1.equals("exit")) {
 
 				if (input1.equals("0")) {
-					System.out.println("Geben Sie das zu suchende Wort ein!");
+					System.out.println("Geben Sie die zu suchenden Woerter ein!");
 					searchString = scan.next();
-					LinkedList<String> resultsBinaer = search.doSearchOr(signat, searchString); // KandidatenListe
-					LinkedList<String> binaer = list.makeLinearList(dirName, resultsBinaer); // Lineare Liste zum Suchen
-					search.doSearchBool(binaer, searchString); // Suche mit Kandidaten
+					search.doSearchBool(linear0, searchString); // Suche mit Kandidaten
 				}
 
 				if (input1.equals("1")) {
-					System.out.println("Geben Sie das zu suchende Wort ein!");
+					System.out.println("Geben Sie die zu suchenden Woerter ein!");
 					searchString = scan.next();
 					search.doSearchBool(linear1, searchString);
 				}
 
 				if (input1.equals("2")) {
-					System.out.println("Geben Sie das zu suchende Wort ein!");
+					System.out.println("Geben Sie die zu suchenden Woerter ein!");
 					searchString = scan.next();
 					if (useInverted) {
 						search.doSearchBool(inverted, searchString);
@@ -172,6 +171,14 @@ public class UserInterface {
 					} else {
 						System.out.println("VektorListe wurde nicht erstellt!");
 					}
+				}
+
+				if (input1.equals("5")) {
+					System.out.println("Geben Sie die zu suchenden Woerter ein! Nur | und & moeglich.");
+					searchString = scan.next();
+					LinkedList<String> resultsBinaer = search.doSearchOr(signat, searchString); // KandidatenListe
+					LinkedList<String> binaer = list.makeLinearList(dirName, resultsBinaer); // Lineare Liste zum Suchen
+					search.doSearchBool(binaer, searchString); // Suche mit Kandidaten
 				}
 
 				if (input1.equals("exit")) {

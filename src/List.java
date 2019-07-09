@@ -70,6 +70,19 @@ public class List {
 		return linkedList;
 	}
 
+	/**
+	 * Generierung einer linearen Liste und speichern in der Klasse selbst.
+	 * Besonderheit ist der Escape Character "$", mit dem wir in der Search
+	 * identifizieren können, wann das analysierte Wort zu Ende ist. Die Funktion
+	 * der for-Schleife ist wieder das iterative öffnen und einlesen der Inhalte der
+	 * Fabeln, um auf denen dann eine Suche ausführen zu können.(Siehe openSave() in
+	 * Klasse Cleaning.) Der einzige Unterschied ist, dass wir hier dann noch
+	 * jeweils jeden Inhalt der Fabel an die Liste mit einem "$" anhängen, welches
+	 * das Ende der Fabel makiert.
+	 * 
+	 * @param path  Der Pfad, wo die Dateien liegen.
+	 * @param files Die Dateien, auf denen die lineare Liste erzeugt wird
+	 */
 	LinkedList<String> makeLinearList(String path, LinkedList<String> files) {
 		String tempString;
 		String out = "";
@@ -123,6 +136,13 @@ public class List {
 		return linkedList;
 	}
 
+	/**
+	 * berechnet Signaturen und fasst 3 Woerter zu einem Block zusammen, benutzt
+	 * createBlock() und hashSign()
+	 * 
+	 * @param path Pfad der zu bearbeitenden Files
+	 * @return
+	 */
 	LinkedList<String> makeSignaturList(String path) {
 		String tempString;
 		String out = "";
@@ -175,6 +195,12 @@ public class List {
 		return linkedList;
 	}
 
+	/**
+	 * fasst 3 Signaturen zu einer Signatur mit "oder" Funktion zusammen
+	 * 
+	 * @param tempList die drei Signaturen
+	 * @return
+	 */
 	public String createBlock(LinkedList<String> tempList) {
 		String word1 = tempList.get(0);
 		String word2 = tempList.get(1);
@@ -193,7 +219,7 @@ public class List {
 	/**
 	 * Implementierung der Hash-Funktion
 	 * 
-	 * @param word
+	 * @param word zu hashender String
 	 * @return
 	 */
 	public String hashSign(String word) {
@@ -284,7 +310,8 @@ public class List {
 	}
 
 	/**
-	 * Implementierung der invertierten Liste
+	 * Implementierung der invertierten Liste, im Gegenzug zu makeInvertedList wird
+	 * hier die Haeufigkeit der Woerter im Dokument gezaehlt
 	 * 
 	 * @param path Pfad, in der die Dateien zur Suche sich befinden.
 	 * @return
